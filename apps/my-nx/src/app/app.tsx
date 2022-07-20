@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Message } from '@mobssie-nx/api-interfaces';
+import { IMessage, ITodoList } from '@mobssie-nx/api-interfaces';
 
 export const App = () => {
-  const [m, setMessage] = useState<Message>({ message: '' });
+  const [m, setMessage] = useState<IMessage>({ message: '' });
+  const [todoList, setTodoList] = useState([]);
 
   useEffect(() => {
     fetch('/api')
@@ -10,17 +11,25 @@ export const App = () => {
       .then(setMessage);
   }, []);
 
+  useEffect(() => {
+    fetch('/api/todo')
+      .then((r) => r.json())
+      .then((data)=> setTodoList(data));
+  }, []);
+
   return (
     <>
       <div style={{ textAlign: 'center' }}>
-        <h1>Welcome to my-nx!</h1>
-        <img
-          width="450"
-          src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png"
-          alt="Nx - Smart, Fast and Extensible Build System"
-        />
+        <h1>TODO LIST</h1>
       </div>
       <div>{m.message}</div>
+      {todoList.map((todo: any)=> (
+        <div key={todo.id}>
+          <div>{todo.id}</div>
+          <div>{todo.text}</div>
+          <div>{todo.done}</div>
+        </div>
+      ))}
     </>
   );
 };

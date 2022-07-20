@@ -1,12 +1,12 @@
 import * as express from 'express';
-import { Message } from '@mobssie-nx/api-interfaces';
+import { IMessage } from '@mobssie-nx/api-interfaces';
 
 const app = express();
 
 app.use(express.json()) // for parsing application/json
 app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 
-const greeting: Message = { message: 'Welcome to api!' };
+const greeting: IMessage = { message: 'Welcome to api!' };
 
 
 let id = 2;
