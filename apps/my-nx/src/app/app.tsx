@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { IMessage, ITodoList } from '@mobssie-nx/api-interfaces';
+import axios from 'axios';
 
+const SERVER_URL = 'http://localhost:4200/api/todo';
 export const App = () => {
   const [m, setMessage] = useState<IMessage>({ message: '' });
   const [todoList, setTodoList] = useState([]);
 
-  const fetchData= ()=> {
-    fetch('/api/todo')
-      .then((r) => r.json())
-      .then((data)=> setTodoList(data));
+  const fetchData= async ()=> {
+    const response = await axios.get(SERVER_URL);
+    setTodoList(response.data)
+    // fetch('/api/todo')
+    //   .then((r) => r.json())
+    //   .then((data)=> setTodoList(data));
   }
 
   useEffect(() => {
@@ -21,20 +25,22 @@ export const App = () => {
     fetchData();
   }, []);
 
-  const onSubmitHandler = (e: any)=> {
+  const onSubmitHandler = async (e: any)=> {
     e.preventDefault();
     const text = e.target.text.value;
     const done = e.target.done.checked;
-    fetch('http://localhost:4200/api/todo', {
-      method: 'POST',
-      headers:{
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        text,
-        done,
-      })
-    }).then(()=> fetchData());
+    await axios.post(SERVER_URL, { text, done })
+    fetchData();
+    // fetch(SERVER_URL, {
+    //   method: 'POST',
+    //   headers:{
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify({
+    //     text,
+    //     done,
+    //   })
+    // }).then(()=> fetchData());
   };
 
   return (
